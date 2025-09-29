@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AuthorController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { 
+        margin: 1em auto; 
+        max-width: 900px; 
+        width: 95%; 
+        font: 18px/1.5 sans-serif; 
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 2px solid #333; 
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #333; 
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    td img {
+        width: 80px;   
+        height: 80px;  
+        object-fit: cover; 
+        border-radius: 5px;
+    }
+</style>
+
+<div class="example-wrapper">
+    <h1>Authors : </h1>
+    <h4>Author's number : {{authors|length}}</h4>
+    {% set totalBooks = 0 %}
+
+    {% if authors is defined and authors|length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Picture</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Number of Books</th>
+                <th>Details</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for author in authors %}
+                <tr>
+                    <td>{{ author.id }}</td>
+                    <td><img src="{{asset(author.picture)}}" alt="{{author.username}}"></img></td>
+                    <td>{{ author.username|upper }}</td>
+                    <td>{{ author.email }}</td>
+                    <td>{{ author.nb_books }}</td>
+                    <td>
+                        <a href="{{ path('author_details', {id: author.id}) }}">Details</a>
+                    </td>
+                </tr>
+            {% set totalBooks = totalBooks + author.nb_books %}
+
+            {% endfor %}
+        </tbody>
+        </table>
+        <h4>Total number of books : {{totalBooks}} </h4>
+
+    {% else %}
+        <p>There are no authors !!! </p>
+    {% endif %}
+
+
+
+</div>
+{% endblock %}
