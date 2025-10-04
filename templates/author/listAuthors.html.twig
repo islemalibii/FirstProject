@@ -1,0 +1,36 @@
+<style>
+    table {
+        width: 60%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        text-align: left;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px 12px;
+    }
+
+    th {
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+<table>
+<tr>
+<td> Id </td>
+<td> username </td>
+<td> email </td>
+<td> age</td>
+</tr>
+
+{%for l in list %}
+<tr>
+<td>{{l.id}}</td>
+<td>{{l.username}}</td>
+<td>{{l.email}}</td>
+<td>{{l.age}}</td>
+{%endfor%}
+
+</table>

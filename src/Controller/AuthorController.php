@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Controller;
-
+use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Author;
+use App\Repository\AuthorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,6 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class AuthorController extends AbstractController
 {
 
+    //tp3
     private array $authors = [
         [
             'id' => 1,
@@ -63,5 +66,28 @@ final class AuthorController extends AbstractController
         return $this->render('author/showAuthor.html.twig', [
             'author' => $author,
         ]);
+    }
+
+    //tp4
+
+    #[Route('/ShowAllAuthor', name: 'ShowAllAuthor')]
+    public function ShowAllAuthor(AuthorRepository $repo){
+        $authors=$repo->findAll();
+        return $this->render('author/listAuthors.html.twig',['list'=>$authors]);
+    }
+
+    #[Route('/addAuthor', name: 'addAuthorStatic')]
+    public function addAuthorStatic(ManagerRegistry $doctrine): Response
+    {
+        $em = $doctrine->getManager(); 
+        $author = new Author();
+        $author->setUsername("Victor Hugo");
+        $author->setEmail("victor.hugo@gmail.com");
+        $author->setAge(45);
+
+        $em->persist($author);
+        $em->flush();
+
+        return new Response("Author added successfully : " . $author->getUsername());
     }
 }
