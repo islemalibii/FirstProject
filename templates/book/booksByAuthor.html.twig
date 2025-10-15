@@ -1,0 +1,20 @@
+<h1>Books Sorted by Author</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Author</th>
+            <th>Book Title</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+            <tr>
+                <td>{{ book.author.username }}</td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.category }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

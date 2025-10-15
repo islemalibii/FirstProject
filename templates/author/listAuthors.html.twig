@@ -23,6 +23,7 @@
 <td> username </td>
 <td> email </td>
 <td> age</td>
+ <td>Action</td>
 </tr>
 
 {%for l in list %}
@@ -31,6 +32,10 @@
 <td>{{l.username}}</td>
 <td>{{l.email}}</td>
 <td>{{l.age}}</td>
+<td>
+   <a href="{{path('delete',{'id':l.id})}}">Delete</a>
+   <a href="{{ path('editAuthor', {'id': l.id}) }}">Edit</a>
+</td>
 {%endfor%}
 
 </table>

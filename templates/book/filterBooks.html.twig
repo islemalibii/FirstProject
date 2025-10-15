@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filtered Books{% endblock %}
+
+{% block body %}
+<h1>Books Published Before 2023 by Authors with >10 Books</h1>
+
+{% if books is empty %}
+    <p>No Books found</p>
+{% else %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Publication Date</th>
+                <th>Category</th>
+                <th>Author</th>
+                <th>Published</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.publicationDate|date('Y-m-d') }}</td>
+                    <td>{{ book.category }}</td>
+                    <td>{{ book.author.username }}</td>
+                    <td>{{ book.enabled ? 'Yes' : 'No' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+<a href="{{ path('ShowPublishedBooks') }}">Back to List</a>
+{% endblock %}

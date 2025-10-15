@@ -7,6 +7,8 @@ use App\Repository\AuthorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Request;
+use App\Form\AuthorType;
 
 final class AuthorController extends AbstractController
 {
@@ -72,22 +74,80 @@ final class AuthorController extends AbstractController
 
     #[Route('/ShowAllAuthor', name: 'ShowAllAuthor')]
     public function ShowAllAuthor(AuthorRepository $repo){
-        $authors=$repo->findAll();
+        $authors=$repo->listAuthorByEmail();
         return $this->render('author/listAuthors.html.twig',['list'=>$authors]);
     }
 
-    #[Route('/addAuthor', name: 'addAuthorStatic')]
-    public function addAuthorStatic(ManagerRegistry $doctrine): Response
+    #[Route('/addAuthor', name: 'addAuthor')]
+    public function addAuthor(ManagerRegistry $doctrine): Response
     {
-        $em = $doctrine->getManager(); 
         $author = new Author();
         $author->setUsername("Victor Hugo");
         $author->setEmail("victor.hugo@gmail.com");
         $author->setAge(45);
+        $em = $doctrine->getManager(); 
 
         $em->persist($author);
         $em->flush();
 
-        return new Response("Author added successfully : " . $author->getUsername());
+        return new Response("Author added successfully ");
     }
+
+    #[Route('/addAuthorForm', name: 'addAuthorForm')]
+    public function addAuthorForm(ManagerRegistry $doctrine, Request $request): Response
+    {
+        $author = new Author();
+        $form = $this->createForm(AuthorType::class, $author);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $doctrine->getManager();
+            $em->persist($author);
+            $em->flush();
+
+            return $this->redirectToRoute('ShowAllAuthor');
+        }
+
+        return $this->render('author/addAuthor.html.twig', [
+            'formA' => $form->createView()
+        ]);
+    }
+
+    #[Route('/delete/{id}',name:'delete')]
+    public function Delete( ManagerRegistry $doctrine, $id, AuthorRepository $repo){
+           $author=$repo->find($id);
+           if (!$author) {
+                throw $this->createNotFoundException("Author not found.");
+            }
+           $em=$doctrine->getManager();
+           $em->remove($author);
+           $em->flush();
+           return $this->redirectToRoute('ShowAllAuthor');
+        }
+
+
+    #[Route('/edit/{id}', name: 'editAuthor')]
+    public function editAuthor(ManagerRegistry $doctrine, Request $request, AuthorRepository $repo, $id)
+    {
+        $author = $repo->find($id);
+        if (!$author) {
+            throw $this->createNotFoundException("Author not found!");
+        }
+
+        $form = $this->createForm(AuthorType::class, $author);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $doctrine->getManager();
+            $em->flush();
+            return $this->redirectToRoute('ShowAllAuthor');
+        }
+
+        return $this->render('author/editAuthor.html.twig', [
+            'formA' => $form->createView()
+        ]);
+    }
+
+
 }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>List of Books</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 20px;
+    }
+
+    h1 {
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    table {
+        margin: auto;
+        border-collapse: collapse;
+        width: 80%;
+    }
+
+    th, td {
+        border: 1px solid #000;
+        padding: 8px;
+    }
+
+    th {
+        background: #eee;
+    }
+
+    p {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    </style>
+</head>
+<body>
+    <h1>List of Books</h1>
+
+    {% if books is empty %}
+        <p>No Books found</p>
+    {% else %}
+        <form method="get" action="{{ path('ShowPublishedBooks') }}" style="margin-bottom: 20px;">
+            <input type="text" name="author" placeholder="Search by author name" value="{{ authorName ?? '' }}">
+            <button type="submit">Search</button>
+            {% if authorName %}
+                <a href="{{ path('ShowPublishedBooks') }}" style="margin-left: 10px;">Clear</a>
+            {% endif %}
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Publication date</th>
+                    <th>Published</th>
+                    <th>Category</th>
+                    <th>Author</th>
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.publicationDate|date('F j, Y H:i') }}</td>
+                        <td>{{ book.enabled ? 1 : 0 }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>{{ book.author.username }}</td>
+                        <td>
+                            <a href="{{ path('book_show', {'id': book.id}) }}">Show</a>
+                            <a href="{{ path('book_edit', {'id': book.id}) }}">Edit</a>
+                            <a href="{{ path('book_delete', {'id': book.id}) }}" >Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <p>Published books: {{ countPublished }}</p>
+    <p>Unpublished books: {{ countUnpublished }}</p>
+    {% endif %}
+    <a href="{{ path('addBookForm') }}" class="btn-add">Add New Book</a>
+    <a href="{{ path('books_update_category') }}" class="btn-update">Update Sci-Fi → Romance</a>
+
+</body>
+</html>
